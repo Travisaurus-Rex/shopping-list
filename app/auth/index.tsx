@@ -1,4 +1,6 @@
 import ColorPicker from '@/components/ui/ColorPicker'
+import { MODE_COLORS } from '@/constants/Colors'
+import { useTheme } from '@/context/ThemeContext'
 import { supabase } from '@/supabase/client'
 import { Stack } from 'expo-router'
 import React, { useState } from 'react'
@@ -26,8 +28,11 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
     else Alert.alert('Success', 'Check your email to confirm.')
   }
 
+  const { mode } = useTheme();
+  const backgroundColor = MODE_COLORS[mode].background;
+
   return (
-    <View style={styles.container}>
+    <View style={{flex: 1, justifyContent: 'center', padding: 20, backgroundColor}}>
       <ColorPicker style={styles.colorPicker} />
       <Text style={styles.title}>Login or Sign Up</Text>
       <TextInput
@@ -70,9 +75,6 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, justifyContent: 'center', padding: 20,
-  },
   input: {
     borderWidth: 1, borderColor: '#ccc', borderRadius: 4, marginBottom: 12, padding: 10,
   },

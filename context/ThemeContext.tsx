@@ -1,23 +1,42 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, ReactNode, useContext, useState } from 'react';
 
-type ThemeContextType = {
-  primaryColor: string
-  setPrimaryColor: (color: string) => void
+type ThemeMode = 'light' | 'dark';
+
+interface ThemeContextProps {
+  primaryColor: string;
+  mode: ThemeMode;
+  setPrimaryColor: (color: string) => void;
+  toggleMode: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextType>({
-  primaryColor: '#4CAF50', // default green
-  setPrimaryColor: () => {},
-})
+const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [primaryColor, setPrimaryColor] = useState('#4CAF50')
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [primaryColor, setPrimaryColor] = useState('#EC4899');
+  const [mode, setMode] = useState<ThemeMode>('light');
+
+  const toggleMode = () => {
+    setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
+  }
 
   return (
-    <ThemeContext.Provider value={{ primaryColor, setPrimaryColor }}>
+    <ThemeContext.Provider
+      value={{
+        primaryColor,
+        mode,
+        setPrimaryColor,
+        toggleMode,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   )
 }
 
-export const useTheme = () => useContext(ThemeContext)
+export function useTheme() {
+  const context = useContext(ThemeContext)
+  if (!context) {
+    throw new Error('useTheme must be used within a ThemeProvider')
+  }
+  return context
+}

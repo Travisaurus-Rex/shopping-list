@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   GestureResponderEvent,
   StyleSheet,
@@ -6,18 +6,18 @@ import {
   TextStyle,
   TouchableOpacity,
   ViewStyle,
-} from 'react-native'
-import { useTheme } from '../../context/ThemeContext'
-
-type Variant = 'solid' | 'outline' | 'ghost'
+} from 'react-native';
+import { MODE_COLORS } from '../../constants/Colors';
+import { useTheme } from '../../context/ThemeContext';
+type Variant = 'solid' | 'outline' | 'ghost';
 
 type Props = {
-  title: string
-  onPress: (event: GestureResponderEvent) => void
-  variant?: Variant
-  disabled?: boolean
-  fullWidth?: boolean
-  color?: string // e.g. '#4CAF50' or 'black'
+  title: string;
+  onPress: (event: GestureResponderEvent) => void;
+  variant?: Variant;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  color?: string;
 }
 
 export default function Button({
@@ -29,7 +29,8 @@ export default function Button({
   color,
 }: Props) {
 
-  const { primaryColor } = useTheme();
+  const { primaryColor, mode } = useTheme();
+  const themeColors = MODE_COLORS[mode];
   const buttonColor = color ?? primaryColor;
   const buttonStyle: ViewStyle[] = [
   styles.baseButton,
