@@ -44,7 +44,7 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
         style={{ padding: 26, flex: 1, justifyContent: 'center', backgroundColor }}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1, transform: 'translateY(-40px)', justifyContent: 'center', padding: 16 }}>
+          <ScrollView contentContainerStyle={{ justifyContent: 'center', padding: 16 }}>
             <Text style={[styles.title, { color }]}>Login or Sign Up</Text>
             <ThemedTextInput
               placeholder="Email"
