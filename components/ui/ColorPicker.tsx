@@ -1,5 +1,6 @@
+import { MODE_COLORS } from '@/constants/Colors';
 import React, { useState } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 
 
@@ -10,8 +11,9 @@ interface ColorPickerProps {
 const COLORS = ['#EC4899', '#F472B6', '#F59E0B', '#4CAF50', '#3B82F6', '#6366F1'];
 
 export default function ColorPicker({ style }: ColorPickerProps) {
-  const { primaryColor, setPrimaryColor } = useTheme();
+  const { primaryColor, setPrimaryColor, mode } = useTheme();
   const [visible, setVisible] = useState(false);
+  const backgroundColor = MODE_COLORS[mode].background;
 
   const handleColorPick = (color: string) => {
     setPrimaryColor(color);
@@ -19,63 +21,25 @@ export default function ColorPicker({ style }: ColorPickerProps) {
   }
 
   return (
-    <View style={style}>
-      {/* Icon button to open the modal */}
-      <TouchableOpacity
-        style={styles.iconButton}
-        onPress={() => setVisible(true)}
-      >
-        <Text style={styles.icon}>🎨</Text>
-      </TouchableOpacity>
-
-      {/* Color picker modal */}
-      <Modal
-        transparent
-        animationType="fade"
-        visible={visible}
-        onRequestClose={() => setVisible(false)}
-      >
+    <View style={[styles.modalContent, { backgroundColor }]}>
+      {COLORS.map((color) => (
         <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPressOut={() => setVisible(false)}
-        >
-          <View style={styles.modalContent}>
-            {COLORS.map((color) => (
-              <TouchableOpacity
-                key={color}
-                style={[
-                  styles.colorDot,
-                  { backgroundColor: color },
-                  primaryColor === color && styles.activeDot,
-                ]}
-                onPress={() => handleColorPick(color)}
-              />
-            ))}
-          </View>
-        </TouchableOpacity>
-      </Modal>
+          key={color}
+          style={[
+            styles.colorDot,
+            { backgroundColor: color },
+            primaryColor === color && styles.activeDot,
+          ]}
+          onPress={() => handleColorPick(color)}
+        />
+      ))}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  iconButton: {
-    padding: 8,
-    alignSelf: 'flex-end',
-  },
-  icon: {
-    fontSize: 24,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   modalContent: {
     flexDirection: 'row',
-    backgroundColor: 'white',
     padding: 16,
     borderRadius: 12,
     elevation: 5,

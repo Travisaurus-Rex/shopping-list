@@ -1,23 +1,22 @@
-import { Link } from 'expo-router'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { useTheme } from '@/context/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function Home() {
+export default function HomeScreen() {
+  const router = useRouter();
+  const { primaryColor } = useTheme();
+
   return (
-    <TouchableOpacity style={styles.button}>
-      <Link href="/settings" style={styles.linkText}>Settings</Link>
+    <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/settings')}>
+      <Ionicons name="settings" size={28} color={primaryColor} />
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    marginTop: 20,
-    padding: 12,
-    backgroundColor: '#4CAF50',
-    borderRadius: 8,
-  },
-  linkText: {
-    color: 'white',
-    fontWeight: 'bold',
+  iconButton: {
+    padding: 10,
+    alignSelf: 'flex-end'
   },
 })
