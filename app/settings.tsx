@@ -4,20 +4,16 @@ import TopBar from '@/components/ui/TopBar';
 import { MODE_COLORS } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
 import { supabase } from '@/supabase/client'; // adjust path as needed
-import { RootParamList } from '@/types/Navigation';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen() {
   const { primaryColor, mode, toggleMode } = useTheme();
   const color = MODE_COLORS[mode].text;
+  const isDarkMode = mode === 'dark';
   const backgroundColor = MODE_COLORS[mode].background;
-type SettingsScreenNavigationProp = NativeStackNavigationProp<RootParamList, 'Settings'>;
-
-const navigation = useNavigation<SettingsScreenNavigationProp>();
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -32,9 +28,9 @@ const navigation = useNavigation<SettingsScreenNavigationProp>();
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'black' : primaryColor }}>
       <TopBar title="Settings" showBack />
-      <View style={{ padding: 26 }}>
+      <View style={{ flex: 1, padding: 26, backgroundColor }}>
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color }]}>Theme Color</Text>
           <ColorPicker />
@@ -53,7 +49,7 @@ const navigation = useNavigation<SettingsScreenNavigationProp>();
            <Button title="Sign Out" onPress={handleSignOut} color="#d9534f" />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 

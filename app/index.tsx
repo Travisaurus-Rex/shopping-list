@@ -21,6 +21,7 @@ export default function HomeScreen() {
   const [newTitle, setNewTitle] = useState('');
 
   const { primaryColor, mode } = useTheme();
+  const isDarkMode = mode === 'dark';
   const color = MODE_COLORS[mode].text;
   const backgroundColor = MODE_COLORS[mode].background;
 
@@ -48,9 +49,9 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: primaryColor }}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <TopBar title="Home" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'black' : primaryColor }}>
+      <TopBar title="Home" />
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
         <View style={[styles.container, { backgroundColor }]}>
           <Text style={[styles.heading, { color }]}>Your Lists</Text>
           <View style={styles.inputRow}>

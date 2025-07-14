@@ -1,11 +1,13 @@
+import ThemedTextInput from '@/components/ui/ThemedTextInput'
 import TopBar from '@/components/ui/TopBar'
 import { MODE_COLORS } from '@/constants/Colors'
 import { useTheme } from '@/context/ThemeContext'
 import { supabase } from '@/supabase/client'
 import { Stack } from 'expo-router'
 import React, { useState } from 'react'
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import Button from '../../components/ui/Button'
 
 export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
@@ -29,32 +31,33 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
     else Alert.alert('Success', 'Check your email to confirm.');
   }
 
-  const { mode } = useTheme();
+  const { mode, primaryColor } = useTheme();
+  const isDarkMode = mode === 'dark';
+  const color = MODE_COLORS[mode].text;
   const backgroundColor = MODE_COLORS[mode].background;
 
   return (
-    <View style={{flex: 1, backgroundColor}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: isDarkMode ? 'black' : primaryColor}}>
       <TopBar title="Welcome" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // padding works better on iOS
-        style={{ padding: 26, transform: 'translateY(-40px)', flex: 1, justifyContent: 'center' }}
+        style={{ padding: 26, flex: 1, justifyContent: 'center', backgroundColor }}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 16 }}>
-            <Text style={styles.title}>Login or Sign Up</Text>
-            <TextInput
+          <ScrollView contentContainerStyle={{ flexGrow: 1, transform: 'translateY(-40px)', justifyContent: 'center', padding: 16 }}>
+            <Text style={[styles.title, { color }]}>Login or Sign Up</Text>
+            <ThemedTextInput
               placeholder="Email"
               value={email}
               onChangeText={setEmail}
               autoCapitalize="none"
-              style={styles.input}
             />
-            <TextInput
+            <ThemedTextInput
               placeholder="Password"
-              secureTextEntry
+              secure
+              autoCapitalize="none"
               value={password}
               onChangeText={setPassword}
-              style={styles.input}
             />
             <View style={styles.buttonRow}>
               <View style={styles.buttonWrapper}>
@@ -80,14 +83,11 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1, borderColor: '#ccc', borderRadius: 4, marginBottom: 12, padding: 10,
-  },
   title: {
     fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center'
   },
