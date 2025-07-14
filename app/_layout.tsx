@@ -1,3 +1,4 @@
+import { SessionProvider } from '@/context/SessionContext'
 import { Session } from '@supabase/supabase-js'
 import { Slot, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -29,9 +30,11 @@ export default function RootLayout() {
   }, [])
 
   return (
-    <ThemeProvider>
-      <Slot />
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider>
+        <Slot />
+      </ThemeProvider>
+    </SessionProvider>
   );
 }
 

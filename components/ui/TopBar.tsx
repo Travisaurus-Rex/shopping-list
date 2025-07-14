@@ -19,17 +19,17 @@ export default function TopBar({ title, showBack = false }: TopBarProps) {
     <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : primaryColor }]}>
       {showBack ? (
         <Pressable onPress={router.back} style={styles.iconWrapper}>
-          <Ionicons name="arrow-back" size={24} color={isDarkMode ? primaryColor : 'black'} />
+          <Ionicons name="arrow-back" size={24} color={isDarkMode ? primaryColor : '#fff'} />
         </Pressable>
       ) : (
         <View style={styles.iconWrapper} />
       )}
 
-      <Text style={[styles.title, { color: mode === 'dark' ? '#fff' : '#000' }]}>{title}</Text>
+      <Text style={[styles.title, { color: '#fff' }]}>{title}</Text>
 
       {!isOnSettingsPage ? (
         <Pressable onPress={() => router.push('/settings')} style={styles.iconWrapper}>
-          <Ionicons name="person" size={24} color={isDarkMode ? primaryColor : 'black'} />
+          <Ionicons name="person" size={24} color={isDarkMode ? primaryColor : '#fff'} />
         </Pressable>
       ) : (
         <View style={styles.iconWrapper} />
