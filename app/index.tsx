@@ -9,6 +9,9 @@ import { List } from '@/types/List';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function HomeScreen() {
   const { session } = useSession();
@@ -35,8 +38,8 @@ export default function HomeScreen() {
   }
 
   const handleDelete = async (listId: string) => {
-    // LISTS ARE SHARED!
-    // WE SHOULD CHECK IF THE USER REALLY WANTS TO DELETE BEFORE PROCEEDING
+    if (!await confirm('Are you sure you want to delete this list?')) return;
+
     try {
       await deleteList(listId);
     } catch (error) {
@@ -45,34 +48,51 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <TopBar title="Home" />
-      <View style={[styles.container, { backgroundColor }]}>
-        <Text style={[styles.heading, { color }]}>Your Lists</Text>
-        <View style={styles.inputRow}>
-          <ThemedTextInput
-            value={newTitle}
-            onChangeText={setNewTitle}
-            placeholder="Enter list title"
-            style={{ flex: 1 }}
-          />
-          <Button title="Add" onPress={handleCreate} />
-        </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: primaryColor }}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <TopBar title="Home" />
+        <View style={[styles.container, { backgroundColor }]}>
+          <Text style={[styles.heading, { color }]}>Your Lists</Text>
+          <View style={styles.inputRow}>
+            <ThemedTextInput
+              value={newTitle}
+              onChangeText={setNewTitle}
+              placeholder="Enter list title"
+              style={{ flex: 1 }}
+            />
+            <Button title="Add" onPress={handleCreate} />
+          </View>
 
-        <FlatList
-          data={lists}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <Text style={[styles.itemTitle, { color }]}>{item.title}</Text>
-              <TouchableOpacity onPress={() => handleDelete(item.id)} style={{ padding: 8 }}>
-                <Ionicons name="trash" size={24} color="red" />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      </View>
-    </View>
+          <FlatList
+            data={lists}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Swipeable
+                renderRightActions={() => (
+                  <TouchableOpacity
+                    onPress={() => handleDelete(item.id)}
+                    style={{
+                      backgroundColor: 'red',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: 64,
+                      height: '100%',
+                    }}
+                  >
+                    <Ionicons name="trash-outline" size={24} color="white" />
+                  </TouchableOpacity>
+                )}
+              >
+                <View style={styles.listItem}>
+                  <Text style={[styles.itemTitle, { color }]}>{item.title}</Text>
+                </View>
+              </Swipeable>
+            )}
+          />
+
+        </View>
+      </GestureHandlerRootView>
+    </SafeAreaView>
   )
 }
 

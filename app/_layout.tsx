@@ -1,31 +1,32 @@
-import { SessionProvider } from '@/context/SessionContext'
-import { Session } from '@supabase/supabase-js'
-import { Slot, useRouter } from 'expo-router'
-import { useEffect, useState } from 'react'
-import { ThemeProvider } from '../context/ThemeContext'
-import { supabase } from '../supabase/client'
+import { SessionProvider } from '@/context/SessionContext';
+import { Session } from '@supabase/supabase-js';
+import { Slot, useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
+import { ThemeProvider } from '../context/ThemeContext';
+import { supabase } from '../supabase/client';
 
 export default function RootLayout() {
-  const [session, setSession] = useState<Session | null>(null)
-  const router = useRouter()
+  const [session, setSession] = useState<Session | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
+      setSession(session);
     })
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
+      setSession(session);
 
       if (!session) {
-        router.replace('/auth')
+        router.replace('/auth');
       } else {
-        router.replace('/')
+        router.replace('/');
       }
     })
 
     return () => {
-      listener.subscription.unsubscribe()
+      listener.subscription.unsubscribe();
     }
   }, [])
 
@@ -33,6 +34,7 @@ export default function RootLayout() {
     <SessionProvider>
       <ThemeProvider>
         <Slot />
+        <StatusBar style="auto" translucent={false} backgroundColor="transparent" />
       </ThemeProvider>
     </SessionProvider>
   );
