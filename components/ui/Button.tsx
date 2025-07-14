@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native'
+import { useTheme } from '../../context/ThemeContext'
 
 type Variant = 'solid' | 'outline' | 'ghost'
 
@@ -25,33 +26,34 @@ export default function Button({
   variant = 'solid',
   disabled = false,
   fullWidth = false,
-  color = '#4CAF50',
+  color,
 }: Props) {
 
-    const buttonStyle: ViewStyle[] = [
-    styles.baseButton,
-    ...(fullWidth ? [styles.fullWidth] : []),
-    ]
+  const { primaryColor } = useTheme();
+  const buttonColor = color ?? primaryColor;
+  const buttonStyle: ViewStyle[] = [
+  styles.baseButton,
+  ...(fullWidth ? [styles.fullWidth] : []),
+  ]
 
-    const textStyle: TextStyle[] = [styles.baseText]
-
+  const textStyle: TextStyle[] = [styles.baseText];
 
   switch (variant) {
     case 'solid':
-      buttonStyle.push({ backgroundColor: color })
+      buttonStyle.push({ backgroundColor: buttonColor })
       textStyle.push({ color: 'white' })
       break
     case 'outline':
       buttonStyle.push({
         backgroundColor: 'transparent',
-        borderColor: color,
+        borderColor: buttonColor,
         borderWidth: 2,
       })
-      textStyle.push({ color })
+      textStyle.push({ color: buttonColor })
       break
     case 'ghost':
       buttonStyle.push({ backgroundColor: 'transparent' })
-      textStyle.push({ color })
+      textStyle.push({ color: buttonColor })
       break
   }
 

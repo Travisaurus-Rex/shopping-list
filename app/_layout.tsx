@@ -1,7 +1,8 @@
+import { Session } from '@supabase/supabase-js'
 import { Slot, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { supabase } from '../src/supabase/client'
-import { Session } from '@supabase/supabase-js'
+import { ThemeProvider } from '../context/ThemeContext'
+import { supabase } from '../supabase/client'
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
@@ -27,6 +28,10 @@ export default function RootLayout() {
     }
   }, [])
 
-  return <Slot /> // This renders the current screen (e.g. auth/index or index.tsx)
+  return (
+    <ThemeProvider>
+      <Slot />
+    </ThemeProvider>
+  );
 }
 

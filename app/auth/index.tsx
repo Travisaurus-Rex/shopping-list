@@ -1,8 +1,9 @@
-import { supabase } from '@/src/supabase/client'
+import ColorPicker from '@/components/ui/ColorPicker'
+import { supabase } from '@/supabase/client'
 import { Stack } from 'expo-router'
 import React, { useState } from 'react'
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native'
-import Button from '../../components/Button'
+import Button from '../../components/ui/Button'
 
 export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [email, setEmail] = useState('')
@@ -27,6 +28,7 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
 
   return (
     <View style={styles.container}>
+      <ColorPicker style={styles.colorPicker} />
       <Text style={styles.title}>Login or Sign Up</Text>
       <TextInput
         placeholder="Email"
@@ -87,10 +89,12 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flex: 1,
   },
-  outlineButton: {
-    backgroundColor: 'transparent',
-    borderColor: '#007bff',
-  }
+  colorPicker: {
+    position: 'absolute',
+    top: 24,
+    right: 24,
+    zIndex: 10,
+  },
 })
 
 export default function AuthLayout() {
