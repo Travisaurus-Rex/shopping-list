@@ -28,10 +28,19 @@ export default function ColorPicker({ style }: ColorPickerProps) {
           style={[
             styles.colorDot,
             { backgroundColor: color },
-            primaryColor === color && styles.activeDot,
+            {
+              borderColor:
+                primaryColor === color
+                  ? mode === 'dark' ? '#fff' : '#000'  // active dot border color
+                  : mode === 'dark' 
+                    ? 'rgba(255,255,255,0.1)'           // inactive dot subtle border in dark
+                    : 'rgba(0,0,0,0.1)',                 // inactive dot subtle border in light
+              borderWidth: primaryColor === color ? 3 : 1,   // border width based on active state
+            },
           ]}
           onPress={() => handleColorPick(color)}
         />
+
       ))}
     </View>
   )
@@ -50,10 +59,5 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     marginHorizontal: 6,
     borderWidth: 2,
-    borderColor: '#ccc',
-  },
-  activeDot: {
-    borderColor: 'black',
-    borderWidth: 3,
-  },
+  }
 })

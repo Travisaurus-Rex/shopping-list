@@ -1,4 +1,5 @@
 import ColorPicker from '@/components/ui/ColorPicker'
+import TopBar from '@/components/ui/TopBar'
 import { MODE_COLORS } from '@/constants/Colors'
 import { useTheme } from '@/context/ThemeContext'
 import { supabase } from '@/supabase/client'
@@ -33,6 +34,7 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
 
   return (
     <View style={{flex: 1, justifyContent: 'center', padding: 20, backgroundColor}}>
+      <TopBar title="Welcome" />
       <ColorPicker style={styles.colorPicker} />
       <Text style={styles.title}>Login or Sign Up</Text>
       <TextInput

@@ -1,22 +1,27 @@
+import TopBar from '@/components/ui/TopBar';
+import { MODE_COLORS } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { primaryColor } = useTheme();
+  const { primaryColor, mode } = useTheme();
+  const color = MODE_COLORS[mode].text;
+  const backgroundColor = MODE_COLORS[mode].background;
 
   return (
-    <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/settings')}>
-      <Ionicons name="settings" size={28} color={primaryColor} />
-    </TouchableOpacity>
+    <View style={{ flex: 1, alignItems: 'center', backgroundColor }}>
+      <TopBar title="Home" />
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   iconButton: {
     padding: 10,
-    alignSelf: 'flex-end'
+    position: 'absolute',
+    top: 0,
+    right: 0
   },
 })
