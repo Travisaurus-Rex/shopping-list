@@ -53,8 +53,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    // shadow for Android
-    elevation: 3,
   },
   iconWrapper: {
     width: 32,

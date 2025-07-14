@@ -7,6 +7,7 @@ import { supabase } from '@/supabase/client'; // adjust path as needed
 import { RootParamList } from '@/types/Navigation';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 
@@ -25,11 +26,9 @@ const navigation = useNavigation<SettingsScreenNavigationProp>();
       // Optionally show a toast or alert here
       return;
     }
-    // Navigate user to auth/login screen after sign out
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Auth' }], // adjust this route name to your login screen
-    });
+
+    await supabase.auth.signOut();
+    router.replace('/auth');
   };
 
   return (

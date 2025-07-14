@@ -3,6 +3,7 @@ import { Session } from '@supabase/supabase-js';
 import { Slot, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from '../context/ThemeContext';
 import { supabase } from '../supabase/client';
 
@@ -33,8 +34,10 @@ export default function RootLayout() {
   return (
     <SessionProvider>
       <ThemeProvider>
-        <Slot />
-        <StatusBar style="auto" translucent={false} backgroundColor="transparent" />
+        <GestureHandlerRootView>
+          <Slot />
+          <StatusBar style="auto" translucent={false} backgroundColor="transparent" />
+        </GestureHandlerRootView>
       </ThemeProvider>
     </SessionProvider>
   );
