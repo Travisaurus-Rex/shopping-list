@@ -1,6 +1,8 @@
+import { supabase } from '@/src/supabase/client'
+import { Stack } from 'expo-router'
 import React, { useState } from 'react'
-import { View, TextInput, Button, Alert, StyleSheet, Text } from 'react-native'
-import { supabase } from '../supabase/client'
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native'
+import Button from '../../components/Button'
 
 export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => {
   const [email, setEmail] = useState('')
@@ -40,9 +42,27 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
         onChangeText={setPassword}
         style={styles.input}
       />
-      <Button title={loading ? 'Please wait...' : 'Sign In'} onPress={handleSignIn} />
-      <View style={{ height: 8 }} />
-      <Button title="Sign Up" onPress={handleSignUp} />
+      <View style={styles.buttonRow}>
+        <View style={styles.buttonWrapper}>
+          <Button
+            title="Sign In"
+            onPress={handleSignIn}
+            variant="solid"
+            fullWidth
+            disabled={loading}
+          />
+        </View>
+        <View style={{ width: 10 }} />
+        <View style={styles.buttonWrapper}>
+          <Button
+            title="Sign Up"
+            onPress={handleSignUp}
+            variant="outline"
+            fullWidth
+            disabled={loading}
+          />
+        </View>
+      </View>
     </View>
   )
 }
@@ -56,7 +76,28 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center'
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    gap: 5
+  },
+  buttonWrapper: {
+    flex: 1,
+  },
+  outlineButton: {
+    backgroundColor: 'transparent',
+    borderColor: '#007bff',
   }
 })
 
-export default AuthScreen;
+export default function AuthLayout() {
+  return (
+    <>
+      <Stack.Screen options={{ title: 'Login' }} />
+      <AuthScreen onAuthSuccess={() => {}} />
+    </>
+  )
+}
