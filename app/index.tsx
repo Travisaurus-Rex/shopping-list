@@ -7,7 +7,8 @@ import { useTheme } from '@/context/ThemeContext';
 import { createList, deleteList, getUserLists } from '@/supabase/lists';
 import { List } from '@/types/List';
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,21 +16,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const { session } = useSession();
+  const router = useRouter();
   const userId = session?.user.id;
-
   const [lists, setLists] = useState<List[]>([]);
   const [newTitle, setNewTitle] = useState('');
-
+  const [swiping, setSwiping] = useState(false);
   const { primaryColor, mode } = useTheme();
   const isDarkMode = mode === 'dark';
   const color = MODE_COLORS[mode].text;
   const backgroundColor = MODE_COLORS[mode].background;
+  const swipeableRefs = useRef(new Map<string, Swipeable | null>())
 
   useEffect(() => {
     if (userId) {
       getUserLists(userId).then(setLists).catch(console.error);
     }
-  }, [userId, lists]);
+  }, [userId]);
 
   const handleCreate = async () => {
     if (!newTitle.trim() || !userId) return;
@@ -43,6 +45,9 @@ export default function HomeScreen() {
 
     try {
       await deleteList(listId);
+      const swipeable = swipeableRefs.current.get(listId);
+      swipeable?.close();
+      setLists(currentLists => currentLists.filter(list => list.id !== listId));
     } catch (error) {
       console.error('Failed to delete list', error);
     }
@@ -68,7 +73,9 @@ export default function HomeScreen() {
             data={lists}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <Swipeable
+              <Swipeable ref={(ref) => {swipeableRefs.current.set(item.id, ref)}}
+                onSwipeableWillOpen={() => setSwiping(true)}
+                onSwipeableClose={() => setSwiping(false)}
                 renderRightActions={() => (
                   <TouchableOpacity
                     onPress={() => handleDelete(item.id)}
@@ -84,9 +91,16 @@ export default function HomeScreen() {
                   </TouchableOpacity>
                 )}
               >
-                <View style={styles.listItem}>
-                  <Text style={[styles.itemTitle, { color }]}>{item.title}</Text>
-                </View>
+                 <TouchableOpacity
+                    style={styles.listItem}
+                    onPress={() => {
+                      if (!swiping) {
+                        router.push({ pathname: '/list/[id]', params: { id: item.id } })
+                      }
+                    }}
+                  >
+                    <Text style={[styles.itemTitle, { color }]}>{item.title}</Text>
+                  </TouchableOpacity>
               </Swipeable>
             )}
           />

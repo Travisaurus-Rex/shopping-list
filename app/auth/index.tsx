@@ -5,7 +5,7 @@ import { useTheme } from '@/context/ThemeContext'
 import { supabase } from '@/supabase/client'
 import { Stack } from 'expo-router'
 import React, { useState } from 'react'
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Button from '../../components/ui/Button'
@@ -43,8 +43,10 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // padding works better on iOS
         style={{ padding: 26, flex: 1, justifyContent: 'center', backgroundColor }}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={{ justifyContent: 'center', padding: 16 }}>
+        <ScrollView
+            contentContainerStyle={{ justifyContent: 'center', padding: 16 }}
+            keyboardShouldPersistTaps="handled"
+          >
             <Text style={[styles.title, { color }]}>Login or Sign Up</Text>
             <ThemedTextInput
               placeholder="Email"
@@ -81,7 +83,6 @@ export const AuthScreen = ({ onAuthSuccess }: { onAuthSuccess: () => void }) => 
               </View>
             </View>
           </ScrollView>
-        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
