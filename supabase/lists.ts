@@ -38,8 +38,8 @@ export async function getUserLists(ownerId: string): Promise<List[]> {
     .eq('owner_id', ownerId)
     .order('created_at', { ascending: false })
 
-  if (error) throw error
-  return data ?? []
+  if (error) throw error;
+  return data ?? [];
 }
 
 export async function getListItems(listId: string) {
@@ -47,10 +47,12 @@ export async function getListItems(listId: string) {
     .from('list_items')
     .select('*')
     .eq('list_id', listId)
-    .order('created_at', { ascending: true })
+    .order('created_at', { ascending: true });
 
-  if (error) throw error
-  return data
+    console.log(data, error);
+
+  if (error) throw error;
+  return data;
 }
 
 export async function createListItem(listId: string, content: string) {
@@ -59,19 +61,31 @@ export async function createListItem(listId: string, content: string) {
     .from('list_items')
     .insert([{ list_id: listId, content, created_by: (await user).data.user?.id }])
     .select()
-    .single()
+    .single();
 
-  if (error) throw error
-  return data
+  if (error) throw error;
+  return data;
 }
 
-export async function deleteListItem(itemId: string) {
+export async function deleteListItem(itemId: number) {
   const { data, error } = await supabase
     .from('list_items')
     .delete()
-    .eq('id', itemId)
+    .eq('id', itemId);
 
-  if (error) throw error
-  return data
+  if (error) throw error;
+  return data;
+}
+
+export async function toggleListItemCompleted(itemId: number, completed: boolean) {
+  const { data, error } = await supabase
+    .from('list_items')
+    .update({ completed: !completed })
+    .eq('id', itemId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 

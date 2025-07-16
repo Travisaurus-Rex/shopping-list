@@ -3,10 +3,13 @@ import ThemedTextInput from '@/components/ui/ThemedTextInput'
 import TopBar from '@/components/ui/TopBar'
 import { MODE_COLORS } from '@/constants/Colors'
 import { useTheme } from '@/context/ThemeContext'
-import { createListItem, deleteListItem, getListItems, getListTitle } from '@/supabase/lists'
+import { createListItem, deleteListItem, getListItems, getListTitle, toggleListItemCompleted } from '@/supabase/lists'
+import { ListItem } from '@/types/ListItem'
+import { Ionicons } from '@expo/vector-icons'
 import { useLocalSearchParams } from 'expo-router'
-import { useEffect, useState } from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Swipeable } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function ListDetailScreen() {
@@ -16,6 +19,7 @@ export default function ListDetailScreen() {
   const [listTitle, setListTitle] = useState('');
   const { primaryColor, mode } = useTheme();
   const isDarkMode = mode === 'dark';
+  const color = MODE_COLORS[mode].text;
   const backgroundColor = MODE_COLORS[mode].background;
 
   useEffect(() => {
@@ -32,10 +36,97 @@ export default function ListDetailScreen() {
     setNewItem('');
   }
 
-  const handleDelete = async (itemId: string) => {
+  const handleDelete = async (itemId: number) => {
     await deleteListItem(itemId);
     setItems(prev => prev.filter(item => item.id !== itemId));
   }
+
+  const handleToggleCompleted = async (itemId: number, currentState: boolean) => {
+    try {
+      await toggleListItemCompleted(itemId, currentState);
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === itemId ? { ...item, completed: !currentState } : item
+        )
+      );
+    } catch (err) {
+      console.error('Failed to toggle completed state:', err);
+    }
+  };
+
+  const ItemList = ({
+    items,
+    onDeleteItem,
+    onToggleCompleted,
+    color,
+  }: {
+    items: ListItem[];
+    onDeleteItem: (id: number) => void;
+    onToggleCompleted: (id: number, currentStatus: boolean) => void;
+    color: string;
+  }) => {
+    const swipeableRow = useRef<Swipeable | null>(null);
+    const [isSwiping, setIsSwiping] = useState(false);
+
+    const closeSwipe = () => {
+      if (swipeableRow.current) {
+        swipeableRow.current.close();
+      }
+    }
+
+    return (
+      <FlatList
+        data={items}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <Swipeable
+            ref={(ref) => {
+              if (ref) swipeableRow.current = ref;
+            }}
+            onSwipeableWillOpen={() => setIsSwiping(true)}
+            onSwipeableWillClose={() => setTimeout(() => setIsSwiping(false), 100)}
+            renderRightActions={() => (
+              <TouchableOpacity
+                onPress={() => {
+                  onDeleteItem(item.id);
+                  closeSwipe();
+                }}
+                style={{
+                  backgroundColor: 'red',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: 64,
+                  height: '100%',
+                }}
+              >
+                <Ionicons name="trash-outline" size={24} color="white" />
+              </TouchableOpacity>
+            )}
+          >
+            <TouchableOpacity
+              style={styles.itemRow}
+              onPress={() => {
+                if (!isSwiping) {
+                  onToggleCompleted(item.id, item.completed);
+                }
+              }}
+            >
+              <Text
+                style={{
+                  color: item.completed ? 'gray' : color,
+                  textDecorationLine: item.completed ? 'line-through' : 'none',
+                }}
+              >
+                {item.content}
+              </Text>
+            </TouchableOpacity>
+          </Swipeable>
+        )}
+        contentContainerStyle={{ padding: 16 }}
+      />
+    )
+  }
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'black' : primaryColor }}>
@@ -50,21 +141,11 @@ export default function ListDetailScreen() {
           />
           <Button title="Add" onPress={handleAddItem} />
         </View>
-
-        <FlatList
-          data={items}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.itemRow}>
-              <Text style={{ color: mode === 'dark' ? '#fff' : '#000' }}>{item.content}</Text>
-              <Button
-                title="🗑️"
-                onPress={() => handleDelete(item.id)}
-                fullWidth={false}
-              />
-            </View>
-          )}
-          contentContainerStyle={{ padding: 16 }}
+        <ItemList
+          items={items}
+          onDeleteItem={handleDelete}
+          onToggleCompleted={handleToggleCompleted}
+          color={color}
         />
       </View>
     </SafeAreaView>
