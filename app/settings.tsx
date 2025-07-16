@@ -2,8 +2,9 @@ import Button from '@/components/ui/Button';
 import ColorPicker from '@/components/ui/ColorPicker';
 import TopBar from '@/components/ui/TopBar';
 import { MODE_COLORS } from '@/constants/Colors';
+import { useSession } from '@/context/SessionContext';
 import { useTheme } from '@/context/ThemeContext';
-import { supabase } from '@/supabase/client'; // adjust path as needed
+import { supabase } from '@/supabase/client';
 import { router } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
@@ -11,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen() {
   const { primaryColor, mode, toggleMode } = useTheme();
+  const { session } = useSession();
   const color = MODE_COLORS[mode].text;
   const isDarkMode = mode === 'dark';
   const backgroundColor = MODE_COLORS[mode].background;
@@ -45,9 +47,11 @@ export default function SettingsScreen() {
             onValueChange={toggleMode}
           />
         </View>
-        <View style={styles.section}>
-           <Button title="Sign Out" onPress={handleSignOut} color="#d9534f" />
-        </View>
+        { session && session.user &&
+          <View style={styles.section}>
+            <Button title="Sign Out" onPress={handleSignOut} color="#d9534f" />
+          </View>
+        }
       </View>
     </SafeAreaView>
   )

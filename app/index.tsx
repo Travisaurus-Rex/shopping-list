@@ -15,17 +15,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function HomeScreen() {
-  const { session } = useSession();
   const router = useRouter();
-  const userId = session?.user.id;
+  const { session } = useSession();
+  const { primaryColor, mode } = useTheme();
   const [lists, setLists] = useState<List[]>([]);
   const [newTitle, setNewTitle] = useState('');
   const [swiping, setSwiping] = useState(false);
-  const { primaryColor, mode } = useTheme();
+  const userId = session?.user.id;
   const isDarkMode = mode === 'dark';
   const color = MODE_COLORS[mode].text;
   const backgroundColor = MODE_COLORS[mode].background;
-  const swipeableRefs = useRef(new Map<string, Swipeable | null>())
+  const swipeableRefs = useRef(new Map<string, Swipeable | null>());
 
   useEffect(() => {
     if (userId) {
