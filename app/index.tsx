@@ -64,7 +64,6 @@ export default function HomeScreen() {
               value={newTitle}
               onChangeText={setNewTitle}
               placeholder="Enter list title"
-              style={{ flex: 1 }}
             />
             <Button title="Add" onPress={handleCreate} />
           </View>

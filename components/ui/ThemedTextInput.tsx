@@ -60,9 +60,10 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingHorizontal: 10,
     marginVertical: 6,
+    flex: 1,
   },
   input: {
-    flex: 1,
+    width: '100%',
     paddingVertical: 10,
     fontSize: 16,
   },
