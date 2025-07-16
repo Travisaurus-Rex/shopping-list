@@ -58,13 +58,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderRadius: 6,
-    paddingHorizontal: 10,
     marginVertical: 6,
     flex: 1,
   },
   input: {
     width: '100%',
     paddingVertical: 10,
+    paddingHorizontal: 10,
     fontSize: 16,
   },
   iconContainer: {

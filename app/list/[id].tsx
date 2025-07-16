@@ -21,6 +21,7 @@ export default function ListDetailScreen() {
   const isDarkMode = mode === 'dark';
   const color = MODE_COLORS[mode].text;
   const backgroundColor = MODE_COLORS[mode].background;
+  const borderColor = MODE_COLORS[mode].borderColor;
 
   useEffect(() => {
     if (typeof listId === 'string') {
@@ -127,7 +128,6 @@ export default function ListDetailScreen() {
     )
   }
 
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'black' : primaryColor }}>
       <TopBar title={listTitle} showBack />
@@ -141,12 +141,19 @@ export default function ListDetailScreen() {
           />
           <Button title="Add" onPress={handleAddItem} />
         </View>
-        <ItemList
-          items={items}
-          onDeleteItem={handleDelete}
-          onToggleCompleted={handleToggleCompleted}
-          color={color}
-        />
+        { (!items || items.length == 0) &&
+          <View style={{ padding: 24, margin: 16, borderStyle: 'solid', borderWidth: 1, borderColor, borderRadius: 6 }}>
+            <Text style={{ color, textAlign: 'center' }}>No items yet</Text>
+          </View>
+        }
+        { items && items.length > 0 &&
+          <ItemList
+            items={items}
+            onDeleteItem={handleDelete}
+            onToggleCompleted={handleToggleCompleted}
+            color={color}
+          />
+        }
       </View>
     </SafeAreaView>
   )
